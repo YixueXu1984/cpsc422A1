@@ -398,16 +398,16 @@ public class Main {
             System.out.println("");
         }
 
-        double checkcheck = 0;
-        for (int y=2; y>=0; y--) {
-            for (int x = 0; x < 4; x++) {
-                checkcheck = checkcheck + map[x][y];
-            }
-        }
+//        double checkcheck = 0;
+//        for (int y=2; y>=0; y--) {
+//            for (int x = 0; x < 4; x++) {
+//                checkcheck = checkcheck + map[x][y];
+//            }
+//        }
 
-        System.out.println("checkcheck: " + checkcheck);
-
-        System.out.println(counter);
+//        System.out.println("checkcheck: " + checkcheck);
+//
+//        System.out.println(counter);
     }
 
 
