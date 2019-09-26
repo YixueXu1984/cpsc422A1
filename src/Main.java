@@ -30,7 +30,7 @@ public class Main {
             }
             map[3][1] = 0;
             map[3][2] = 0;
-            map[1][1] = -1;
+            map[1][1] = 0;
         }
      else {
             // if S0 is known, the bs for s0 is one, and every other cell is 0
@@ -41,7 +41,7 @@ public class Main {
     private static void initializBSwithS0(int a, int b){
 
         map[a][b] = 1;
-        map[1][1] = -1;
+        map[1][1] = 0;
     }
 
     private static void updateBS(String move, int obs) {
@@ -57,14 +57,32 @@ public class Main {
         }
 
         //2nd step: update the belief state value of each cell
-        //b'(x,y) = 1/alpha * P(e|(x,y)) * sum((P((x,y)|move, (x0,y0))*b(xn,yn))
+        //b'(x,y) = alpha * P(e|(x,y)) * sum((P((x,y)|move, (x0,y0))*b(xn,yn))
         double alpha = (double) 1/counter;
         for (int x=0; x<4; x++) {
             for (int y=0;y<3;y++) {
-                map[x][y] = /*(alpha)* */ (tellPobs(obs,x,y)) * whatsInSum(move, x,y, localmap);
+                map[x][y] = alpha * (tellPobs(obs,x,y)) * whatsInSum(move, x,y, localmap);
             }
         }
 
+        //3rd step: normalize
+        double checksum = 0;
+        for (int y=2; y>=0; y--) {
+            for (int x = 0; x < 4; x++) {
+                checksum = checksum + map[x][y];
+            }
+        }
+
+        for (int x=0; x<4;x++) {
+            for (int y=0; y<3; y++) {
+                map[x][y] = (double) map[x][y] / checksum;
+            }
+        }
+
+
+
+        // set (1,1) to 0
+        map[1][1] =0;
     }
 
     private static double whatsInSum(String move, int x, int y, double[][] localmap) {
@@ -369,24 +387,25 @@ public class Main {
         //very informal test case
         initializeMap();
         initializeBS(true,0,0);
-        updateBS("left",2);
-//        updateBS("up",2);
-//        updateBS("up",2);
+        updateBS("up",2);
+        updateBS("right",2);
+        updateBS("right",1);
+        updateBS("right",1);
         for (int y=2; y>=0; y--) {
             for (int x = 0; x < 4; x++) {
-                System.out.print("(" +x + "," + y +")"+ ": "+map[x][y] + "  ");
+                System.out.print("(" +(x+1) + "," + (y+1) +")"+ ": "+map[x][y] + "  ");
             }
             System.out.println("");
         }
 
-        double checksum = 0;
+        double checkcheck = 0;
         for (int y=2; y>=0; y--) {
             for (int x = 0; x < 4; x++) {
-                checksum = checksum + map[x][y];
+                checkcheck = checkcheck + map[x][y];
             }
         }
 
-        System.out.println("checksum: " + checksum);
+        System.out.println("checkcheck: " + checkcheck);
 
         System.out.println(counter);
     }
